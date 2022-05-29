@@ -11,11 +11,10 @@
 |
 */
 
-use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [LoginController::class, 'login']);
+Route::redirect('/', '/login');
 
 Auth::routes(['verify' => true]);
 

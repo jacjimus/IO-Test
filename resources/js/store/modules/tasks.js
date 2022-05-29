@@ -1,17 +1,24 @@
 import axios from 'axios';
 
 const state = {
-    tasks: []
+    tasks: {
+        current_page: 1,
+        data: [],
+        from:1,
+        last_page:1,
+        per_page:10,
+        to:10,
+        total:20,
+    }
 };
 
 const getters = {
-    tasks: state => state.tasks
 };
 
 const actions = {
-    async fetchTasks({ commit }) {
+    async fetchTasks({ commit }, { page } = { page: 1}) {
         const response =  await axios.get(
-            'api/task'
+            `/api/task?page=${page}`
         )
         commit('setTasks', response.data.data);
     },
@@ -41,12 +48,11 @@ const actions = {
         commit('setTask', response.data);
     },
     async updateTask({ commit }, updTask) {
-        const response = await axios.put(
-            `api/Task/${updTask.id}`,
+        const response = await axios.post(
+            `api/task/${updTask.id}`,
             updTask
         );
 
-        console.log(response.data);
 
         commit('updateTask', response.data);
     }
@@ -60,7 +66,7 @@ const mutations = {
     updateTask: (state, updTask) => {
         const index = state.tasks.findIndex(task => task.id === updTask.id);
         if (index !== -1) {
-            state.tasks.splice(index, 1, updTask);
+             state.tasks.splice(index, 1, updTask);
         }
     }
 };

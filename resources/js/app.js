@@ -6,14 +6,16 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+import Vue from 'vue';
 import moment from 'moment';
-
-import { Form, HasError, AlertError } from 'vform';
-window.Form = Form;
-
 import Swal from 'sweetalert2';
+import VueRouter from 'vue-router';
+import VueProgressBar from 'vue-progressbar'
+import { Form, HasError, AlertError } from 'vform';
+import routes from './routes';
+import store from './store'
 
+window.Form = Form;
 
 const Toast = Swal.mixin({
     toast: true,
@@ -29,23 +31,16 @@ const Toast = Swal.mixin({
 window.Swal = Swal;
 window.Toast = Toast;
 
-import VueProgressBar from 'vue-progressbar'
 Vue.use(VueProgressBar, {
-    color: 'rgb(143, 255, 199)',
-    failedColor: 'red',
-    height: '3px'
-  });
-
-Vue.component(HasError.name, HasError)
-Vue.component(AlertError.name, AlertError)
-
+  color: 'rgb(143, 255, 199)',
+  failedColor: 'red',
+  height: '3px'
+});
 
 /**
  * Routes imports and assigning
  */
-import VueRouter from 'vue-router';
 Vue.use(VueRouter);
-import routes from './routes';
 
 const router = new VueRouter({
     mode: 'history',
@@ -53,18 +48,11 @@ const router = new VueRouter({
 });
 // Routes End
 
-
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-
 // Components
 Vue.component('pagination', require('laravel-vue-pagination'));
 Vue.component('dashboard', require('./components/Dashboard.vue'));
-
+Vue.component(HasError.name, HasError)
+Vue.component(AlertError.name, AlertError)
 
 // Filter Section
 
@@ -75,7 +63,13 @@ Vue.filter('myDate',function(created){
 Vue.filter('yesno', value => (value ? '<i class="fas fa-check green"></i>' : '<i class="fas fa-times red"></i>'));
 
 // end Filter
-import store from './store'
+
+
+/**
+ * Next, we will create a fresh Vue application instance and attach it to
+ * the page. Then, you may begin adding components to this application
+ * or customize the JavaScript scaffolding to fit your unique needs.
+ */
 
 const app = new Vue({
     el: '#app',
