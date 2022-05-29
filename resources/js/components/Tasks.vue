@@ -29,10 +29,10 @@
                     </tr>
                   </thead>
                   <tbody>
-                     <tr v-for="task in tasks.data" :key="task.id">
+                     <tr v-for="task in getAllTasks" :key="task.id">
 
                       <td>{{task.id}}</td>
-                      <td>{{task.description | truncate(30, '...')}}</td>
+                      <td>{{task.description | truncate(task, 30, '...')}}</td>
                       <td>{{task.status}}</td>
                       <!-- <td><img v-bind:src="'/' + task.photo" width="100" alt="task"></td> -->
                       <td>
@@ -51,7 +51,7 @@
               </div>
               <!-- /.card-body -->
               <div class="card-footer">
-                  <pagination :data="tasks" @pagination-change-page="getResults"></pagination>
+                  <pagination :data="tasks" @pagination-change-page="getAllTasks"></pagination>
               </div>
             </div>
             <!-- /.card -->
@@ -107,152 +107,29 @@
 </template>
 
 <script>
-
+import mapActions  from 'vuex';
     export default {
 
-        data () {
-            return {
-                editmode: false,
-                tasks : {},
-                form: new Form({
-                    id : '',
-                    description: '',
-                    user_id: '',
-                    status: '',
-                }),
-
-                autocompleteItems: [],
-            }
+        name: 'Tasks',
+        mounted() {
+          this.fetchTasks()
+        },
+        computed: {
+                getAllTasks(){ //final output from here
+                    return this.$store.getters.tasks
+                }
         },
         methods: {
-
-          getResults(page = 1) {
-
-              this.$Progress.start();
-
-              axios.get('api/task?page=' + page).then(({ data }) => (this.tasks = data.data));
-
-              this.$Progress.finish();
-          },
-          loadTasks(){
-
-            // if(this.$gate.isAdmin()){
-              axios.get("api/task").then(({ data }) => (this.tasks = data.data));
-            // }
-          },
-
-          editModal(task){
-              this.editmode = true;
-              this.form.reset();
-              $('#addNew').modal('show');
-              this.form.fill(task);
-          },
-          newModal(){
-              this.editmode = false;
-              this.form.reset();
-              $('#addNew').modal('show');
-          },
-          createTask(){
-              this.$Progress.start();
-
-              this.form.post('api/task')
-              .then((data)=>{
-                if(data.data.success){
-                  $('#addNew').modal('hide');
-
-                  Toast.fire({
-                        icon: 'success',
-                        title: data.data.message
-                    });
-                  this.$Progress.finish();
-                  this.loadTasks();
-
-                } else {
-                  Toast.fire({
-                      icon: 'error',
-                      title: 'Some error occured! Please try again'
-                  });
-
-                  this.$Progress.failed();
-                }
-              })
-              .catch(()=>{
-
-                  Toast.fire({
-                      icon: 'error',
-                      title: 'Some error occured! Please try again'
-                  });
-              })
-          },
-          updateTask(){
-              this.$Progress.start();
-              this.form.put('api/task/'+this.form.id)
-              .then((response) => {
-                  // success
-                  $('#addNew').modal('hide');
-                  Toast.fire({
-                    icon: 'success',
-                    title: response.data.message
-                  });
-                  this.$Progress.finish();
-                      //  Fire.$emit('AfterCreate');
-
-                  this.loadTasks();
-              })
-              .catch(() => {
-                  this.$Progress.fail();
-              });
-
-          },
-          deleteTask(id){
-              Swal.fire({
-                  title: 'Are you sure?',
-                  text: "You won't be able to revert this!",
-                  showCancelButton: true,
-                  confirmButtonColor: '#d33',
-                  cancelButtonColor: '#3085d6',
-                  confirmButtonText: 'Yes, delete it!'
-                  }).then((result) => {
-
-                      // Send request to the server
-                        if (result.value) {
-                              this.form.delete('api/task/'+id).then(()=>{
-                                      Swal.fire(
-                                      'Deleted!',
-                                      'Your file has been deleted.',
-                                      'success'
-                                      );
-                                  // Fire.$emit('AfterCreate');
-                                  this.loadTasks();
-                              }).catch((data)=> {
-                                  Swal.fire("Failed!", data.message, "warning");
-                              });
-                        }
-                  })
-          },
-
-        },
-        mounted() {
-
-        },
-        created() {
-            this.$Progress.start();
-
-            this.loadTasks();
-
-            this.$Progress.finish();
+            fetchTasks () {
+                this.$store.dispatch('fetchTasks')
+            }
         },
         filters: {
             truncate: function (text, length, suffix) {
+                console.log(text)
                 return text.substring(0, length) + suffix;
             },
         },
-        computed: {
-          filteredItems() {
-            return this.autocompleteItems.filter(i => {
-              return i.text.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1;
-            });
-          },
-        },
+
     }
 </script>

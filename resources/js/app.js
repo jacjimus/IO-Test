@@ -75,9 +75,10 @@ Vue.filter('myDate',function(created){
 Vue.filter('yesno', value => (value ? '<i class="fas fa-check green"></i>' : '<i class="fas fa-times red"></i>'));
 
 // end Filter
-
+import store from './store'
 
 const app = new Vue({
     el: '#app',
-    router
+    router,
+    store
 });
