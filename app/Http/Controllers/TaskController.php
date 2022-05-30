@@ -18,7 +18,6 @@ class TaskController extends BaseController
      */
     public function __construct(TaskRepository $taskRepository)
     {
-        $this->middleware('auth:sanctum');
         $this->taskRepository = $taskRepository;
     }
 
