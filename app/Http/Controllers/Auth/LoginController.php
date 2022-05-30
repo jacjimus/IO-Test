@@ -17,7 +17,6 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/dashboard';
 
     /**
      * Create a new controller instance.
@@ -41,7 +40,7 @@ class LoginController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
+        return response()->redirectTo('/dashboard')->with([
             'access_token' => $token,
             'token_type' => 'Bearer',
         ]);
