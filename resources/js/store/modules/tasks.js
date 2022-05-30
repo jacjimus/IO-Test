@@ -25,7 +25,7 @@ const actions = {
     async addTask({ commit }, payload) {
         const response = await axios.post(
             'api/task',
-            { payload }
+            { ...payload }
         );
 
         commit('newTask', response.data);

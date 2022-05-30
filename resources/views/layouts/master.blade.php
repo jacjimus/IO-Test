@@ -7,8 +7,8 @@
 
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title>{{ config('app.name', 'Laravel') }}</title>
-  
+  <title>{{ config('app.name', 'IO Test') }}</title>
+
 
   <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
 </head>
@@ -76,21 +76,11 @@
   {{-- Content Wrapper. Contains page content --}}
   <div class="content-wrapper">
     {{-- Main content --}}
-    
+
     <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
-        {{-- <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1 class="m-0 text-dark"></h1>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Starter Page</li>
-            </ol>
-          </div><!-- /.col -->
-        </div><!-- /.row --> --}}
+
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
@@ -111,7 +101,7 @@
       <b>Version</b> 3.0.0
     </div>
     {{-- Default to the left --}}
-    <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+    <strong>Copyright &copy; 2022 <a href="#">io.co.za</a>.</strong> All rights reserved.
   </footer>
 </div>
 {{-- ./wrapper --}}

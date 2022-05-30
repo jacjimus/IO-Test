@@ -29,41 +29,10 @@ class TaskRequest extends FormRequest
      */
     public function rules()
     {
-        if ($this->isMethod('post')) {
-            return $this->createRules();
-        } elseif ($this->isMethod('put')) {
-            return $this->updateRules();
-        }
-    }
-
-    /**
-     * Define validation rules to store method for resource creation
-     *
-     * @return array
-     */
-    public function createRules(): array
-    {
         return [
             'description' => 'required|string|max:1000',
             'user_id' => 'required|integer',
             'status' => 'required|string',
-             //'file' => 'sometimes|files',
-        ];
-    }
-
-    /**
-     * Define validation rules to update method for resource update
-     *
-     * @return array
-     */
-    public function updateRules(): array
-    {
-        return [
-            'description' => 'required|string|max:1000',
-            'status' => 'required|string',
-            'user_id' => 'required|integer',
-            // 'user_id' => 'required|',
-            // 'photo' => 'sometimes|files',
         ];
     }
 }

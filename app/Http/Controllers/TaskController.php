@@ -3,23 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskRequest;
-use App\Models\Task;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Repositories\TaskRepository;
 
 class TaskController extends BaseController
 {
     protected $task = '';
+
+    private TaskRepository $taskRepository;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(Task $task)
+    public function __construct(TaskRepository $taskRepository)
     {
-        $this->middleware('auth:api');
-        $this->task = $task;
+        $this->middleware('auth:sanctum');
+        $this->taskRepository = $taskRepository;
     }
 
     /**
@@ -29,7 +29,7 @@ class TaskController extends BaseController
      */
     public function index()
     {
-        $tasks = $this->task->where('user_id', Auth::user()->id)->latest()->paginate(10);
+        $tasks = $this->taskRepository->paginate(10);
 
         return $this->sendResponse($tasks, 'Task list');
     }
@@ -42,7 +42,7 @@ class TaskController extends BaseController
      */
     public function store(TaskRequest $request)
     {
-        $task = $this->task->create($request->all());
+        $task = $this->taskRepository->create($request->only(['description', 'status', 'user_id']));
 
         return $this->sendResponse($task, 'Task Created Successfully');
     }
@@ -56,7 +56,7 @@ class TaskController extends BaseController
      */
     public function show($id)
     {
-        $task = $this->task->findOrFail($id);
+        $task = $this->taskRepository->show($id);
 
         return $this->sendResponse($task, 'Task Details');
     }
@@ -71,9 +71,7 @@ class TaskController extends BaseController
      */
     public function update(TaskRequest $request, $id)
     {
-        $task = $this->task->findOrFail($id);
-
-        $task->update($request->all());
+        $task = $this->taskRepository->update($id, $request->only(['description', 'status', 'user_id']));
 
         return $this->sendResponse($task, 'Task details has been updated');
     }
@@ -85,18 +83,8 @@ class TaskController extends BaseController
      */
     public function destroy($id)
     {
-        $task = $this->task->findOrFail($id);
-
-        $task->delete();
+        $task = $this->taskRepository->delete($id);
 
         return $this->sendResponse($task, 'Task has been Deleted');
-    }
-
-    public function upload(Request $request)
-    {
-        $fileName = time() . '.' . $request->file->getClientOriginalExtension();
-        $request->file->move(public_path('upload'), $fileName);
-
-        return response()->json(['success' => true]);
     }
 }

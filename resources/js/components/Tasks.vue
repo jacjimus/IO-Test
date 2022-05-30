@@ -36,7 +36,10 @@
                       <td>{{task.status}}</td>
                       <!-- <td><img v-bind:src="'/' + task.photo" width="100" alt="task"></td> -->
                       <td>
-
+                      <a href="#" @click="() => handleView(task)">
+                          <i class="fa fa-eye green"></i>
+                      </a>
+                         /
                         <a href="#" @click="() => handleEdit(task)">
                             <i class="fa fa-edit blue"></i>
                         </a>
@@ -63,8 +66,8 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" v-show="!editing">Create New Product</h5>
-                    <h5 class="modal-title" v-show="editing">Edit Product</h5>
+                    <h5 class="modal-title" v-show="!editing">Create New Task</h5>
+                    <h5 class="modal-title" v-show="editing">Edit Task</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -96,9 +99,38 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="showModal = false">Close</button>
                         <button v-show="editing" type="submit" class="btn btn-success">Update</button>
-                        <button v-show="!editing" type="submit" @click="handleStore" class="btn btn-primary">Create</button>
+                        <button v-show="!editing" type="submit" class="btn btn-primary">Create</button>
                     </div>
                   </form>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="viewModal" class="modal fade" style="opacity:1;display:block" id="viewTask" tabindex="-1" role="dialog" aria-labelledby="viewTask" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" >View Task details</h5>
+                        <button type="button" class="close" @click="viewModal = false" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                        <div class="modal-body">
+                           <div class="row">
+                               <div class="col-md-4">Task description</div>
+                               <div class="col-md-8">{{ this.selected.description }} </div>
+                           </div>
+                            <div class="row">
+                                <div class="col-md-4">Task Status</div>
+                                <div class="col-md-8">{{ this.selected.status }}</div>
+                            </div>
+
+                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="viewModal = false">Close</button>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -114,6 +146,7 @@ export default {
   data() {
     return {
       showModal: false,
+      viewModal: false,
       selected: new Form({
         description: '',
         status: ''
@@ -143,15 +176,16 @@ export default {
         return;
       }
 
-      // call save
+        this.addTask( this.selected)
     },
     handleCreate() {
       this.resetSelected();
       this.showModal = true;
     },
-     handleStore() {
-       this.addTask(this.selected)
-     },
+    handleView(task) {
+          this.selected =  task ;
+          this.viewModal = true;
+      },
     handleEdit(task) {
       this.selected = new Form({ ...task });
       this.showModal = true;

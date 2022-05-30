@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Task;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class TaskRepository implements TaskRepositoryInterface
 {
@@ -21,7 +22,7 @@ class TaskRepository implements TaskRepositoryInterface
      */
     public function get()
     {
-        return $this->model->get();
+        return $this->model->where('user_id', Auth::user()->id)->get();
     }
 
     /**
@@ -98,7 +99,7 @@ class TaskRepository implements TaskRepositoryInterface
      */
     public function paginate($perPage)
     {
-        return $this->model->paginate($perPage);
+        return $this->model->where('user_id', Auth::user()->id)->latest()->paginate($perPage);
     }
 
     /**
